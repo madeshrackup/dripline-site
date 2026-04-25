@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 import { BookingModal } from "./BookingModal";
 import {
   HERO_BACKGROUND_SRC,
-  PHONE_DISPLAY,
-  PHONE_E164,
   QUOTE_EMAIL,
   SERVICE_AREA_LABEL,
   SLOGAN,
@@ -59,7 +57,7 @@ export function Hero() {
         aria-labelledby="hero-heading"
       >
         <div className="max-w-3xl">
-          <p className="font-slab text-lg font-semibold text-brand drop-shadow-sm">
+          <p className="font-display text-lg font-semibold text-brand drop-shadow-sm">
             {SLOGAN}
           </p>
           <h1
@@ -76,10 +74,10 @@ export function Hero() {
 
         <div className="mt-10 rounded-3xl border-2 border-slate-200/90 bg-white/95 p-6 sm:p-8">
           <div
-            className="flex flex-col gap-5 lg:flex-row lg:flex-wrap lg:items-end"
+            className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between md:gap-6"
             aria-label="Postcode and booking"
           >
-            <div className="flex min-w-0 flex-1 flex-col gap-2 lg:max-w-xs">
+            <div className="flex min-w-0 flex-1 flex-col gap-2 md:max-w-md">
               <label
                 htmlFor="postcode"
                 className="text-sm font-semibold uppercase tracking-wide text-slate-600"
@@ -105,12 +103,8 @@ export function Hero() {
                   className="w-full rounded-2xl border-2 border-slate-200 bg-white py-3 pl-11 pr-4 text-slate-900 placeholder:text-slate-400 transition-colors focus:border-brand focus:outline-none"
                 />
               </div>
-              <p className="text-xs text-slate-500">
-                Add your postcode, then open the booking form — or call us any
-                time.
-              </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={openBookingModal}
@@ -136,16 +130,24 @@ export function Hero() {
           ) : null}
         </div>
 
-        <p className="mt-8 text-sm font-medium text-slate-800 drop-shadow-sm">
-          Prefer the phone? Call{" "}
-          <a
-            href={`tel:${PHONE_E164}`}
-            className="font-bold text-brand underline decoration-2 underline-offset-2 hover:text-slate-900 hover:no-underline"
+        <div className="mt-8 flex flex-wrap items-center gap-3 drop-shadow-sm">
+          <div
+            className="flex items-center gap-0.5 text-amber-500"
+            aria-label="Five out of five stars"
           >
-            {PHONE_DISPLAY}
-          </a>{" "}
-          any time.
-        </p>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star
+                key={i}
+                className="h-6 w-6 fill-current sm:h-7 sm:w-7"
+                strokeWidth={0}
+                aria-hidden
+              />
+            ))}
+          </div>
+          <p className="text-sm font-semibold text-slate-800 sm:text-base">
+            Excellent reviews from all our customers!
+          </p>
+        </div>
       </Section>
 
       <BookingModal

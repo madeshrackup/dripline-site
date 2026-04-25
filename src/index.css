@@ -5,7 +5,7 @@
   --color-brand-light: #aad9ff;
   --color-brand-surface: #f8fcff;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-slab: "Roboto Slab", ui-serif, Georgia, serif;
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
@@ -20,11 +20,17 @@ body {
   color: #0f172a;
 }
 
-.font-slab {
-  font-family: "Roboto Slab", ui-serif, Georgia, serif;
+/* Accent / display lines (sans, not serif) */
+.font-display {
+  font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
 }
 
 :focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
+}
+
+/* Booking modal: no focus ring; fields still show border change on focus */
+.booking-modal :where(input, textarea, select, button, a):focus-visible {
+  outline: none;
 }

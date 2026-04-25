@@ -1,10 +1,10 @@
 import { Faq } from "./components/Faq";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
+import { InstagramFeed } from "./components/InstagramFeed";
 import { PromoBanner } from "./components/PromoBanner";
 import { ServiceGrid } from "./components/ServiceGrid";
 import { SiteHeader } from "./components/SiteHeader";
-import { TrustSignals } from "./components/TrustSignals";
 
 export default function App() {
   return (
@@ -19,7 +19,7 @@ export default function App() {
       <PromoBanner />
       <main id="main-content">
         <Hero />
-        <TrustSignals />
+        <InstagramFeed />
         <ServiceGrid />
         <Faq />
       </main>

@@ -8,7 +8,7 @@ import {
 
 const nav = [
   { href: "#services", label: "Services" },
-  { href: "#trust", label: "Why us" },
+  { href: "#instagram", label: "Instagram" },
   { href: "#faq", label: "FAQ" },
   { href: "#contact", label: "Contact" },
 ] as const;

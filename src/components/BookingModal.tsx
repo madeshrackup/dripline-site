@@ -14,8 +14,21 @@ type BookingModalProps = {
   initialPostcode: string;
 };
 
+type FieldKey = "name" | "phone" | "email" | "service";
+
+type FieldErrors = Partial<Record<FieldKey, string>>;
+
+/** Shown in the alert strip when any field fails validation */
+const FORM_SUMMARY_MESSAGE =
+  "There was a problem, have a look at the fields below.";
+
 function normalizeUkPostcode(value: string): string {
   return value.trim().toUpperCase().replace(/\s+/g, " ");
+}
+
+function isValidUkMobile(value: string): boolean {
+  const d = value.replace(/[\s-]/g, "");
+  return /^07\d{9}$/.test(d) || /^\+447\d{9}$/.test(d);
 }
 
 export function BookingModal({
@@ -24,6 +37,10 @@ export function BookingModal({
   initialPostcode,
 }: BookingModalProps) {
   const titleId = useId();
+  const nameId = useId();
+  const phoneId = useId();
+  const emailId = useId();
+  const serviceId = useId();
   const nameRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -31,12 +48,26 @@ export function BookingModal({
   const [postcode, setPostcode] = useState("");
   const [service, setService] = useState("");
   const [details, setDetails] = useState("");
-  const [formError, setFormError] = useState<string | null>(null);
+  const [summaryError, setSummaryError] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  function clearFieldError(key: FieldKey) {
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  }
+
+  useEffect(() => {
+    if (Object.keys(fieldErrors).length === 0) setSummaryError(false);
+  }, [fieldErrors]);
 
   useEffect(() => {
     if (open) {
       setPostcode(normalizeUkPostcode(initialPostcode));
-      setFormError(null);
+      setSummaryError(false);
+      setFieldErrors({});
       document.body.style.overflow = "hidden";
       const t = window.setTimeout(() => nameRef.current?.focus(), 50);
       return () => {
@@ -54,7 +85,8 @@ export function BookingModal({
       setEmail("");
       setService("");
       setDetails("");
-      setFormError(null);
+      setSummaryError(false);
+      setFieldErrors({});
     }
   }, [open]);
 
@@ -69,22 +101,30 @@ export function BookingModal({
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!name.trim()) {
-      setFormError("Please enter your name.");
-      return;
-    }
+    const next: FieldErrors = {};
+
+    if (!name.trim()) next.name = "Enter your full name.";
     if (!phone.trim()) {
-      setFormError("Please enter your contact number.");
+      next.phone = "Enter your contact number.";
+    } else if (!isValidUkMobile(phone)) {
+      next.phone = "Use a valid UK mobile (e.g. 07403 767600).";
+    }
+    if (!email.trim()) {
+      next.email = "Enter your email address.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      next.email = "Use a valid email address.";
+    }
+    if (!service) next.service = "Select a service from the list.";
+
+    if (Object.keys(next).length > 0) {
+      setFieldErrors(next);
+      setSummaryError(true);
       return;
     }
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setFormError("Please enter a valid email address.");
-      return;
-    }
-    if (!service) {
-      setFormError("Please select a service.");
-      return;
-    }
+
+    setFieldErrors({});
+    setSummaryError(false);
+
     const body = encodeURIComponent(
       [
         `Name: ${name.trim()}`,
@@ -102,6 +142,11 @@ export function BookingModal({
     onClose();
   }
 
+  const inputError = (key: FieldKey) =>
+    fieldErrors[key]
+      ? "border border-red-500 focus:border-red-600"
+      : "border border-slate-200 focus:border-brand";
+
   if (!open) return null;
 
   return (
@@ -111,7 +156,7 @@ export function BookingModal({
     >
       <button
         type="button"
-        className="absolute inset-0 bg-slate-950/70"
+        className="absolute inset-0 bg-slate-950/70 focus:outline-none"
         aria-label="Close booking form"
         onClick={onClose}
       />
@@ -119,116 +164,146 @@ export function BookingModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative z-10 flex max-h-[min(92vh,860px)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border-2 border-slate-800 bg-white shadow-none"
+        className="booking-modal relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded border border-slate-300 bg-white shadow-none"
       >
-        <div className="relative shrink-0 bg-brand px-6 pb-6 pt-8 text-center text-white sm:px-10">
+        <div className="relative shrink-0 bg-brand px-6 pb-6 pt-8 text-center text-white sm:px-12">
           <button
             type="button"
             onClick={onClose}
-            className="absolute right-4 top-4 rounded-full border-2 border-white/40 p-2 text-white transition-colors hover:bg-white/15"
+            className="absolute right-4 top-4 rounded border border-white/50 p-2 text-white transition-colors hover:bg-white/15"
             aria-label="Close"
           >
             <X className="h-5 w-5" strokeWidth={2.5} aria-hidden />
           </button>
           <h2
             id={titleId}
-            className="text-2xl font-bold tracking-tight sm:text-3xl"
+            className="font-sans text-2xl font-bold tracking-tight sm:text-3xl"
           >
             Make a booking
           </h2>
-          <p className="mt-2 text-sm text-brand-light sm:text-base">
+          <p className="mt-2 font-sans text-sm text-brand-light sm:text-base">
             Prefer the phone? Call us and we’ll book you in straight away:
           </p>
           <a
             href={`tel:${PHONE_E164}`}
-            className="mt-3 inline-block text-3xl font-bold tracking-tight text-white underline decoration-2 decoration-brand-light underline-offset-4 hover:text-brand-light sm:text-4xl"
+            className="mt-3 inline-block font-sans text-3xl font-bold tracking-tight text-white no-underline transition-opacity hover:opacity-90 hover:text-brand-light sm:text-4xl"
           >
             {PHONE_DISPLAY}
           </a>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6 sm:px-10 sm:py-8">
-          <p className="text-center text-sm text-slate-600 sm:text-base">
+        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6 sm:px-12 sm:py-8">
+          <p className="text-center font-sans text-sm text-slate-600 sm:text-base">
             Can’t call right now? Send a booking request using the form below —
             we’ll confirm by phone or email.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
-            {formError ? (
+            {summaryError ? (
               <p
-                className="rounded-2xl border-2 border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-900"
+                className="rounded border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-semibold text-red-600"
                 role="alert"
               >
-                {formError}
+                {FORM_SUMMARY_MESSAGE}
               </p>
             ) : null}
 
             <div className="grid gap-5 sm:grid-cols-2">
-              <div className="flex flex-col gap-2 text-left">
+              <div className="flex flex-col gap-1.5 text-left">
                 <label
-                  htmlFor="booking-name"
+                  htmlFor={nameId}
                   className="text-xs font-bold uppercase tracking-wide text-slate-800"
                 >
                   Name <span className="text-red-600">*</span>
                 </label>
                 <input
                   ref={nameRef}
-                  id="booking-name"
+                  id={nameId}
                   name="name"
                   type="text"
                   autoComplete="name"
                   placeholder="First name, surname"
                   value={name}
+                  aria-invalid={Boolean(fieldErrors.name)}
+                  aria-describedby={fieldErrors.name ? `${nameId}-err` : undefined}
                   onChange={(e) => {
                     setName(e.target.value);
-                    setFormError(null);
+                    clearFieldError("name");
                   }}
-                  className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none"
+                  className={`rounded bg-white px-4 py-3 font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none ${inputError("name")}`}
                 />
+                {fieldErrors.name ? (
+                  <p
+                    id={`${nameId}-err`}
+                    className="text-sm font-semibold text-red-600"
+                  >
+                    {fieldErrors.name}
+                  </p>
+                ) : null}
               </div>
-              <div className="flex flex-col gap-2 text-left">
+              <div className="flex flex-col gap-1.5 text-left">
                 <label
-                  htmlFor="booking-phone"
+                  htmlFor={phoneId}
                   className="text-xs font-bold uppercase tracking-wide text-slate-800"
                 >
                   Contact number <span className="text-red-600">*</span>
                 </label>
                 <input
-                  id="booking-phone"
+                  id={phoneId}
                   name="phone"
                   type="tel"
                   autoComplete="tel"
                   placeholder="07400 123456"
                   value={phone}
+                  aria-invalid={Boolean(fieldErrors.phone)}
+                  aria-describedby={fieldErrors.phone ? `${phoneId}-err` : undefined}
                   onChange={(e) => {
                     setPhone(e.target.value);
-                    setFormError(null);
+                    clearFieldError("phone");
                   }}
-                  className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none"
+                  className={`rounded bg-white px-4 py-3 font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none ${inputError("phone")}`}
                 />
+                {fieldErrors.phone ? (
+                  <p
+                    id={`${phoneId}-err`}
+                    className="text-sm font-semibold text-red-600"
+                  >
+                    {fieldErrors.phone}
+                  </p>
+                ) : null}
               </div>
-              <div className="flex flex-col gap-2 text-left">
+              <div className="flex flex-col gap-1.5 text-left">
                 <label
-                  htmlFor="booking-email"
+                  htmlFor={emailId}
                   className="text-xs font-bold uppercase tracking-wide text-slate-800"
                 >
                   Email address <span className="text-red-600">*</span>
                 </label>
                 <input
-                  id="booking-email"
+                  id={emailId}
                   name="email"
                   type="email"
                   autoComplete="email"
                   placeholder="you@example.com"
                   value={email}
+                  aria-invalid={Boolean(fieldErrors.email)}
+                  aria-describedby={fieldErrors.email ? `${emailId}-err` : undefined}
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    setFormError(null);
+                    clearFieldError("email");
                   }}
-                  className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none"
+                  className={`rounded bg-white px-4 py-3 font-sans text-slate-900 placeholder:text-slate-400 focus:outline-none ${inputError("email")}`}
                 />
+                {fieldErrors.email ? (
+                  <p
+                    id={`${emailId}-err`}
+                    className="text-sm font-semibold text-red-600"
+                  >
+                    {fieldErrors.email}
+                  </p>
+                ) : null}
               </div>
-              <div className="flex flex-col gap-2 text-left">
+              <div className="flex flex-col gap-1.5 text-left">
                 <label
                   htmlFor="booking-postcode"
                   className="text-xs font-bold uppercase tracking-wide text-slate-800"
@@ -242,31 +317,32 @@ export function BookingModal({
                   autoComplete="postal-code"
                   placeholder="e.g. HA1 2XY"
                   value={postcode}
-                  onChange={(e) => {
-                    setPostcode(e.target.value);
-                    setFormError(null);
-                  }}
-                  className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none"
+                  onChange={(e) => setPostcode(e.target.value)}
+                  className="rounded border border-slate-200 bg-white px-4 py-3 font-sans text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 text-left">
+            <div className="flex flex-col gap-1.5 text-left">
               <label
-                htmlFor="booking-service"
+                htmlFor={serviceId}
                 className="text-xs font-bold uppercase tracking-wide text-slate-800"
               >
                 Service <span className="text-red-600">*</span>
               </label>
               <select
-                id="booking-service"
+                id={serviceId}
                 name="service"
                 value={service}
+                aria-invalid={Boolean(fieldErrors.service)}
+                aria-describedby={
+                  fieldErrors.service ? `${serviceId}-err` : undefined
+                }
                 onChange={(e) => {
                   setService(e.target.value);
-                  setFormError(null);
+                  clearFieldError("service");
                 }}
-                className="rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-brand focus:outline-none"
+                className={`rounded bg-white px-4 py-3 font-sans text-slate-900 focus:outline-none ${inputError("service")}`}
               >
                 <option value="">Select a service</option>
                 {BOOKING_SERVICE_OPTIONS.map((opt) => (
@@ -275,6 +351,14 @@ export function BookingModal({
                   </option>
                 ))}
               </select>
+              {fieldErrors.service ? (
+                <p
+                  id={`${serviceId}-err`}
+                  className="text-sm font-semibold text-red-600"
+                >
+                  {fieldErrors.service}
+                </p>
+              ) : null}
             </div>
 
             <div className="flex flex-col gap-2 text-left">
@@ -290,11 +374,8 @@ export function BookingModal({
                 rows={4}
                 placeholder="What’s going on, when it started, and anything you’ve already tried…"
                 value={details}
-                onChange={(e) => {
-                  setDetails(e.target.value);
-                  setFormError(null);
-                }}
-                className="resize-y rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none"
+                onChange={(e) => setDetails(e.target.value)}
+                className="resize-y rounded border border-slate-200 bg-white px-4 py-3 font-sans text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none"
               />
             </div>
 
@@ -302,13 +383,13 @@ export function BookingModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-full border-2 border-slate-300 bg-white px-8 py-3 text-sm font-bold uppercase tracking-wide text-slate-800 transition-colors hover:border-slate-400"
+                className="rounded border border-slate-300 bg-white px-8 py-3 font-sans text-sm font-bold uppercase tracking-wide text-slate-800 transition-colors hover:border-slate-400"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="rounded-full border-2 border-red-600 bg-red-600 px-8 py-3 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:border-red-700 hover:bg-red-700"
+                className="rounded border border-red-600 bg-red-600 px-8 py-3 font-sans text-sm font-bold uppercase tracking-wide text-white transition-colors hover:border-red-700 hover:bg-red-700"
               >
                 Send booking request
               </button>

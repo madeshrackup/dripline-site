@@ -1,0 +1,210 @@
+import { useEffect, useMemo, useState } from "react";
+import { Clock, Instagram } from "lucide-react";
+import {
+  INSTAGRAM_FEED_API_URL,
+  INSTAGRAM_PROFILE_URL,
+  INSTAGRAM_USERNAME,
+} from "../siteConfig";
+import { Section } from "./Section";
+
+type IgMedia = {
+  id: string;
+  media_type?: string;
+  media_url?: string;
+  thumbnail_url?: string;
+  permalink?: string;
+  caption?: string;
+};
+
+type IgMediaResponse = { data?: IgMedia[] };
+
+function pickImageUrl(m: IgMedia): string | undefined {
+  if (m.media_type === "VIDEO") return m.thumbnail_url || m.media_url;
+  return m.media_url || m.thumbnail_url;
+}
+
+function truncateCaption(text: string | undefined, max = 80): string {
+  if (!text) return "Instagram post";
+  const t = text.replace(/\s+/g, " ").trim();
+  return t.length <= max ? t : `${t.slice(0, max)}…`;
+}
+
+export function InstagramFeed() {
+  const [rawPosts, setRawPosts] = useState<IgMedia[] | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">(
+    INSTAGRAM_FEED_API_URL ? "loading" : "idle",
+  );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const posts = useMemo(() => {
+    if (!rawPosts) return [];
+    return rawPosts.filter((m) => Boolean(pickImageUrl(m)));
+  }, [rawPosts]);
+
+  useEffect(() => {
+    if (!INSTAGRAM_FEED_API_URL) {
+      setStatus("idle");
+      return;
+    }
+
+    let cancelled = false;
+    setStatus("loading");
+    setErrorMessage(null);
+
+    (async () => {
+      try {
+        const res = await fetch(INSTAGRAM_FEED_API_URL);
+        const json = (await res.json()) as IgMediaResponse & {
+          error?: string;
+          message?: string;
+        };
+
+        if (!res.ok) {
+          throw new Error(json.message || json.error || res.statusText);
+        }
+
+        if (json.error && !json.data) {
+          throw new Error(json.message || json.error);
+        }
+
+        const list = json.data ?? [];
+        if (!cancelled) {
+          setRawPosts(list);
+          setStatus("ok");
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setRawPosts(null);
+          setStatus("error");
+          setErrorMessage(e instanceof Error ? e.message : "Could not load feed.");
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const showGrid = status === "ok" && posts.length > 0;
+
+  const fallbackBody =
+    status === "error"
+      ? errorMessage || "The Instagram feed could not be loaded."
+      : status === "ok" && posts.length === 0 && INSTAGRAM_FEED_API_URL
+        ? "No posts were returned from Instagram yet."
+        : "Connect your Instagram Business account via the secure feed API to show posts here.";
+
+  return (
+    <div id="instagram" className="border-b-2 border-slate-200 bg-slate-50">
+      <Section className="py-12 lg:py-16" aria-labelledby="instagram-heading">
+        <div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-center sm:gap-3">
+          <Instagram className="h-8 w-8 text-brand" strokeWidth={2} aria-hidden />
+          <h2
+            id="instagram-heading"
+            className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"
+          >
+            @{INSTAGRAM_USERNAME}
+          </h2>
+        </div>
+        <p className="mx-auto mt-2 max-w-2xl text-center text-slate-600">
+          Recent jobs, tips, and behind-the-scenes from the team — follow us for
+          updates.
+        </p>
+
+        {status === "loading" ? (
+          <div
+            className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4"
+            aria-busy="true"
+            aria-label="Loading Instagram posts"
+          >
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="aspect-square animate-pulse rounded-sm bg-slate-200"
+              />
+            ))}
+          </div>
+        ) : null}
+
+        {showGrid ? (
+          <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4">
+            {posts.map((item) => {
+              const src = pickImageUrl(item)!;
+              const href = item.permalink || INSTAGRAM_PROFILE_URL;
+              return (
+                <li key={item.id}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block aspect-square overflow-hidden rounded-sm border border-slate-200 bg-white transition-shadow hover:ring-2 hover:ring-brand focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
+                  >
+                    <img
+                      src={src}
+                      alt={truncateCaption(item.caption)}
+                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
+
+        {status !== "loading" && !showGrid ? (
+          <div className="mx-auto mt-10 max-w-xl rounded-sm border-2 border-dashed border-slate-300 bg-white px-6 py-10 text-center">
+            <p className="text-sm text-slate-600">{fallbackBody}</p>
+            <a
+              href={INSTAGRAM_PROFILE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-sm border-2 border-brand bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-brand/90"
+            >
+              <Instagram className="h-5 w-5" aria-hidden />
+              View @{INSTAGRAM_USERNAME} on Instagram
+            </a>
+            {!INSTAGRAM_FEED_API_URL ? (
+              <p className="mt-4 text-xs text-slate-500">
+                Deploy with Netlify and set{" "}
+                <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
+                  VITE_INSTAGRAM_FEED_API
+                </code>{" "}
+                to your function URL, plus{" "}
+                <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
+                  INSTAGRAM_USER_ID
+                </code>{" "}
+                and{" "}
+                <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
+                  INSTAGRAM_ACCESS_TOKEN
+                </code>{" "}
+                on Netlify — see{" "}
+                <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
+                  netlify/functions/instagram-feed.mjs
+                </code>
+                .
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div className="mx-auto mt-10 flex max-w-2xl items-start gap-4 rounded-sm border-2 border-brand bg-white p-5 sm:items-center sm:p-6">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm border-2 border-slate-900 bg-brand-light text-slate-900">
+            <Clock className="h-7 w-7" strokeWidth={2} aria-hidden />
+          </div>
+          <div className="text-left">
+            <p className="font-display text-base font-bold uppercase tracking-wide text-brand sm:text-lg">
+              1-hour response
+            </p>
+            <p className="mt-1 text-sm text-slate-600">
+              Emergency call-outs: we aim to be on our way within one hour across
+              our core Harrow & Brent coverage zone.
+            </p>
+          </div>
+        </div>
+      </Section>
+    </div>
+  );
+}

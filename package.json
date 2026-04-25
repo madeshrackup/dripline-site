@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.5",
-    "@fontsource/roboto-slab": "^5.2.5",
+    "@fontsource/manrope": "^5.2.5",
     "lucide-react": "^0.503.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

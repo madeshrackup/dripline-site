@@ -42,3 +42,17 @@ export const PROMO_HEADLINE =
 /** Shown smaller next to headline; keep aligned with how you actually bill */
 export const PROMO_FINE_PRINT =
   "Materials & parts extra. Fair-use & access rules apply — we’ll confirm before we start.";
+
+/** Instagram @ handle (no @) */
+export const INSTAGRAM_USERNAME = "driplineplumbers";
+
+export const INSTAGRAM_PROFILE_URL =
+  "https://www.instagram.com/driplineplumbers/";
+
+/**
+ * Client calls this URL (must be same-origin or CORS-enabled). On Netlify,
+ * use: https://YOUR-SITE.netlify.app/.netlify/functions/instagram-feed
+ * Set in `.env` as VITE_INSTAGRAM_FEED_API — never put Instagram tokens in Vite env.
+ */
+export const INSTAGRAM_FEED_API_URL: string =
+  (import.meta.env.VITE_INSTAGRAM_FEED_API as string | undefined)?.trim() || "";
