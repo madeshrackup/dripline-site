@@ -50,7 +50,9 @@ export function InstagramFeed() {
 
   const posts = useMemo(() => {
     if (!rawPosts) return [];
-    return rawPosts.filter((m) => Boolean(pickImageUrl(m)));
+    return rawPosts
+      .filter((m) => Boolean(pickImageUrl(m)))
+      .slice(0, 9);
   }, [rawPosts]);
 
   useEffect(() => {
@@ -137,17 +139,16 @@ export function InstagramFeed() {
           </h2>
         </div>
         <p className="mx-auto mt-2 max-w-2xl text-center text-slate-600">
-          Recent jobs, tips, and behind-the-scenes from the team — follow us for
-          updates.
+          Recent jobs, deals, and other behind the scenes! Drop us a follow.
         </p>
 
         {status === "loading" ? (
           <div
-            className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4"
+            className="mx-auto mt-10 grid max-w-4xl grid-cols-3 gap-3 sm:gap-4"
             aria-busy="true"
             aria-label="Loading Instagram posts"
           >
-            {Array.from({ length: 8 }).map((_, i) => (
+            {Array.from({ length: 9 }).map((_, i) => (
               <div
                 key={i}
                 className="aspect-square animate-pulse rounded-sm bg-slate-200"
@@ -157,7 +158,7 @@ export function InstagramFeed() {
         ) : null}
 
         {showGrid ? (
-          <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4">
+          <ul className="mx-auto mt-10 grid max-w-4xl grid-cols-3 gap-3 sm:gap-4">
             {posts.map((item) => {
               const src = pickImageUrl(item)!;
               const href = item.permalink || INSTAGRAM_PROFILE_URL;

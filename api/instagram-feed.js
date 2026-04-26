@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     "timestamp",
   ].join(",");
 
-  const url = `${GRAPH}/${encodeURIComponent(userId)}/media?fields=${fields}&access_token=${encodeURIComponent(token)}&limit=12`;
+  const url = `${GRAPH}/${encodeURIComponent(userId)}/media?fields=${fields}&access_token=${encodeURIComponent(token)}&limit=9`;
 
   try {
     const igRes = await fetch(url);

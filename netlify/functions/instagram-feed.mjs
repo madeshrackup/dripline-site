@@ -64,7 +64,7 @@ export async function handler(event) {
     "timestamp",
   ].join(",");
 
-  const url = `${GRAPH}/${encodeURIComponent(userId)}/media?fields=${fields}&access_token=${encodeURIComponent(token)}&limit=12`;
+  const url = `${GRAPH}/${encodeURIComponent(userId)}/media?fields=${fields}&access_token=${encodeURIComponent(token)}&limit=9`;
 
   try {
     const res = await fetch(url);
