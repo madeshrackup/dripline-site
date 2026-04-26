@@ -51,7 +51,7 @@ export function SiteHeader() {
             </nav>
           </div>
 
-          <div className="flex w-full justify-end lg:contents">
+          <div className="flex w-full justify-center lg:contents">
             <a href={`tel:${PHONE_E164}`} className={phoneLinkClass}>
               <span className="sr-only">Emergency line </span>
               {PHONE_DISPLAY}
