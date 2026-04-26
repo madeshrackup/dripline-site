@@ -4,7 +4,8 @@
  * Environment (Vercel / Netlify) — all server-side, never use the VITE_ prefix:
  *   RESEND_API_KEY        — from https://resend.com
  *   BOOKING_FROM_EMAIL    — required: a Resend-verified sender, e.g. bookings@driplineplumbers.co.uk
- *   BOOKING_TO_EMAIL     — optional; defaults to info@driplineplumbers.co.uk
+ *   BOOKING_TO_EMAIL         — optional; defaults to info@driplineplumbers.co.uk
+ *   BOOKING_EMAIL_LOGO_URL  — optional; full https URL to the wordmark image in emails
  */
 
 import { parseBookingRequest, sendBookingEmail } from "../lib/resend-booking.mjs";
