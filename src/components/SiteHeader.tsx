@@ -51,12 +51,33 @@ export function SiteHeader() {
             </nav>
           </div>
 
-          <div className="flex w-full justify-center lg:contents">
-            <a href={`tel:${PHONE_E164}`} className={phoneLinkClass}>
-              <span className="sr-only">Emergency line </span>
+          <a
+            href={`tel:${PHONE_E164}`}
+            className={`${phoneLinkClass} hidden shrink-0 lg:inline-flex`}
+          >
+            <span className="sr-only">Emergency line </span>
+            {PHONE_DISPLAY}
+          </a>
+        </div>
+      </div>
+
+      <div
+        className="mt-2 w-full border-t border-white/15 bg-red-600 py-2.5 sm:mt-4 sm:py-3 lg:hidden"
+        role="region"
+        aria-label="24/7 emergency call-outs"
+      >
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4 text-center sm:px-6">
+          <p className="font-nav text-sm font-bold leading-snug text-white sm:text-base">
+            <span className="uppercase tracking-wide text-white/90">
+              24/7 emergency call-outs
+            </span>{" "}
+            <a
+              href={`tel:${PHONE_E164}`}
+              className="font-bold text-white underline decoration-white/70 underline-offset-2 transition-colors hover:decoration-white"
+            >
               {PHONE_DISPLAY}
             </a>
-          </div>
+          </p>
         </div>
       </div>
     </header>
