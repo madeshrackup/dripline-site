@@ -1,0 +1,5 @@
+# https://www.driplineplumbers.co.uk
+User-agent: *
+Allow: /
+
+Sitemap: https://www.driplineplumbers.co.uk/sitemap.xml

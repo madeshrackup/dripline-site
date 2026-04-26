@@ -1,0 +1,30 @@
+{
+  "baseUrl": "https://www.driplineplumbers.co.uk",
+  "sitemap": [
+    { "path": "/", "priority": "1.0", "changefreq": "weekly" },
+    { "path": "/services/emergency-plumbing", "priority": "0.8", "changefreq": "monthly" },
+    { "path": "/services/drainage", "priority": "0.8", "changefreq": "monthly" },
+    { "path": "/services/bathroom-installations", "priority": "0.8", "changefreq": "monthly" },
+    { "path": "/contact", "priority": "0.6", "changefreq": "monthly" }
+  ],
+  "servicePages": {
+    "emergency-plumbing": {
+      "h1": "Emergency plumbing in Harrow, Brent & North West London",
+      "title": "24/7 emergency plumbing | Dripline Plumbers, London",
+      "description": "Fast, reliable emergency plumbing: leaks, burst pipes, loss of water, and urgent repairs. Dripline Plumbers for Harrow, Brent and North West London—call 07403 767600.",
+      "lede": "We prioritise true emergencies: dangerous leaks, major loss of water, and issues that can’t wait. Call the emergency line and we’ll dispatch help as fast as we can, including where our one-hour target applies."
+    },
+    "drainage": {
+      "h1": "Drainage: blockages, waste runs & water flow",
+      "title": "Drainage services | Dripline Plumbers, North West London",
+      "description": "Blocked sinks, slow drains, waste and soil pipe problems, and water flow issues—Dripline Plumbers across Harrow, Brent and North West London. Book or call 07403 767600.",
+      "lede": "We work on the plumbing and waste side of your system (traps, runs, and common blockage points). We’ll be clear on what we can clear on the day and when something needs a specialist or deeper investigation."
+    },
+    "bathroom-installations": {
+      "h1": "Bathroom installations & refits",
+      "title": "Bathroom installations & refits | Dripline Plumbers, London",
+      "description": "Bathroom refits, upgrades, and neat finishing—Dripline Plumbers serving Harrow, Brent and North West London. Get in touch to discuss your project.",
+      "lede": "We coordinate pipework, wastes, and fixtures to match your design and your schedule, with a focus on reliable joints, quiet running systems, and straight communication throughout the job."
+    }
+  }
+}
