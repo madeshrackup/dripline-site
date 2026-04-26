@@ -8,6 +8,9 @@ export const HEADING_IMAGE_SRC = "/nav-wordmark.png";
 /** Hero background (London) — replace file in /public to swap image */
 export const HERO_BACKGROUND_SRC = "/hero-london.jpg";
 
+/** Featured on-site clip (e.g. .mov in /public/media) — re-encode to MP4 for smaller files if load feels slow */
+export const TESTIMONIAL_VIDEO_SRC = "/media/homeowner-story.mov";
+
 /** Headline / SEO-friendly area label */
 export const SERVICE_AREA_LABEL = "Harrow, Brent & North West London";
 

@@ -21,7 +21,7 @@ export function SiteHeader() {
     <header className="border-b-2 border-white/15 bg-nav">
       <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-start gap-4">
             <Link to="/" className="block min-w-0 max-w-[min(100%,440px)] shrink no-underline">
               <img
                 src={HEADING_IMAGE_SRC}
@@ -32,13 +32,6 @@ export function SiteHeader() {
                 decoding="async"
               />
             </Link>
-            <a
-              href={`tel:${PHONE_E164}`}
-              className={`${phoneLinkClass} lg:hidden`}
-            >
-              <span className="sr-only">Emergency line </span>
-              {PHONE_DISPLAY}
-            </a>
           </div>
 
           <div className="flex flex-col gap-4 border-t border-white/15 pt-4 sm:flex-row sm:items-center sm:justify-between sm:border-t-0 sm:pt-0 lg:flex-1 lg:justify-end lg:gap-8">
@@ -65,7 +58,7 @@ export function SiteHeader() {
               </nav>
               <a
                 href={`tel:${PHONE_E164}`}
-                className={`${phoneLinkClass} hidden lg:inline-flex`}
+                className={phoneLinkClass}
               >
                 <span className="sr-only">Emergency line </span>
                 {PHONE_DISPLAY}

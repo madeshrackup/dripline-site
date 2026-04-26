@@ -7,7 +7,7 @@ export function PromoBanner() {
   return (
     <aside
       aria-label="Current promotion"
-      className="border-b-2 border-black/15 bg-brand text-white"
+      className="bg-brand text-white"
     >
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-2.5 text-center sm:flex-row sm:justify-center sm:gap-4 sm:py-3">
         <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center sm:gap-3">
@@ -27,7 +27,7 @@ export function PromoBanner() {
               {PROMO_FINE_PRINT}{" "}
               <a
                 href={`tel:${PHONE_E164}`}
-                className="font-bold text-white underline decoration-2 decoration-brand-light underline-offset-2 hover:text-brand-light hover:no-underline"
+                className="font-bold text-white underline-offset-2 hover:text-brand-light hover:underline hover:decoration-2 hover:decoration-white"
               >
                 Call to lock it in
               </a>

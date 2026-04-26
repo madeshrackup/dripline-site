@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Clock, Instagram } from "lucide-react";
+import { Instagram } from "lucide-react";
 import {
   INSTAGRAM_FEED_API_URL,
   INSTAGRAM_PROFILE_URL,
@@ -227,21 +227,6 @@ export function InstagramFeed() {
             ) : null}
           </div>
         ) : null}
-
-        <div className="mx-auto mt-10 flex max-w-2xl items-start gap-4 rounded-sm border-2 border-brand bg-white p-5 sm:items-center sm:p-6">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm border-2 border-slate-900 bg-brand-light text-slate-900">
-            <Clock className="h-7 w-7" strokeWidth={2} aria-hidden />
-          </div>
-          <div className="text-left">
-            <p className="font-display text-base font-bold uppercase tracking-wide text-brand sm:text-lg">
-              1-hour response
-            </p>
-            <p className="mt-1 text-sm text-slate-600">
-              Emergency call-outs: we aim to be on our way within one hour across
-              our core Harrow & Brent coverage zone.
-            </p>
-          </div>
-        </div>
       </Section>
     </div>
   );

@@ -48,10 +48,6 @@ export function Hero() {
         className="absolute inset-0 bg-gradient-to-br from-white/93 via-brand-surface/90 to-white/88"
         aria-hidden
       />
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-1 bg-brand"
-        aria-hidden
-      />
       <Section
         className="relative z-10 py-14 lg:py-20"
         aria-labelledby="hero-heading"
@@ -145,7 +141,7 @@ export function Hero() {
             ))}
           </div>
           <p className="text-sm font-semibold text-slate-800 sm:text-base">
-            Excellent reviews from all our customers!
+            Ratings from all across London!
           </p>
         </div>
       </Section>
