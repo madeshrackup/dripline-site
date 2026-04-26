@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Star } from "lucide-react";
 import { SERVICE_AREA_LABEL, TESTIMONIAL_VIDEO_SRC } from "../siteConfig";
 import { Section } from "./Section";
@@ -16,6 +17,31 @@ function FiveStars() {
 }
 
 export function TestimonialsSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        if (entry.isIntersecting) {
+          void video.play().catch(() => undefined);
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.35, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    observer.observe(video);
+    return () => {
+      observer.disconnect();
+      video.pause();
+    };
+  }, []);
+
   return (
     <div id="testimonials" className="border-b-2 border-slate-200 bg-white">
       <Section className="py-10 lg:py-12" aria-labelledby="testimonials-heading">
@@ -34,9 +60,11 @@ export function TestimonialsSection() {
           {/* Video — left on large screens, portrait / vertical */}
           <div className="mx-auto flex w-full max-w-[min(100%,320px)] shrink-0 justify-center lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:mx-0 lg:max-w-[min(100%,min(360px,38vw))] lg:justify-start">
             <video
+              ref={videoRef}
               className="block h-auto max-h-[min(68dvh,620px)] w-auto max-w-full rounded-2xl border-2 border-slate-200 shadow-lg ring-1 ring-slate-900/5"
               controls
               playsInline
+              muted
               preload="metadata"
               aria-label={`Short on-site clip from work in ${SERVICE_AREA_LABEL}`}
             >

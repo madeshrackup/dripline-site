@@ -19,24 +19,24 @@ export function SiteHeader() {
   return (
     <header className="border-b-2 border-white/15 bg-nav">
       <div className="mx-auto max-w-6xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
-        <div className="flex flex-nowrap items-center justify-between gap-2 sm:gap-4 lg:gap-6">
-          <Link
-            to="/"
-            className="block min-w-0 shrink-0 max-w-[min(100%,46vw)] no-underline sm:max-w-[min(100%,440px)]"
-          >
-            <img
-              src={HEADING_IMAGE_SRC}
-              alt={COMPANY_NAME}
-              className="h-9 w-auto max-w-full object-contain object-left sm:h-12 md:h-14 lg:h-[4rem]"
-              width={754}
-              height={256}
-              decoding="async"
-            />
-          </Link>
+        <div className="flex flex-col gap-2 sm:gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+          <div className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-2 sm:gap-4 lg:flex lg:min-w-0 lg:flex-1 lg:items-center lg:justify-between lg:gap-6">
+            <Link
+              to="/"
+              className="block min-w-0 shrink-0 max-w-[min(100%,46vw)] no-underline sm:max-w-[min(100%,440px)]"
+            >
+              <img
+                src={HEADING_IMAGE_SRC}
+                alt={COMPANY_NAME}
+                className="h-9 w-auto max-w-full object-contain object-left sm:h-12 md:h-14 lg:h-[4rem]"
+                width={754}
+                height={256}
+                decoding="async"
+              />
+            </Link>
 
-          <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-end gap-2 sm:gap-3 md:gap-4 lg:gap-6">
-            <nav aria-label="Primary" className="font-nav shrink-0">
-              <ul className="flex flex-nowrap items-center gap-2.5 text-sm font-semibold uppercase tracking-wide text-brand-light sm:gap-4 sm:text-base md:gap-5 md:text-lg">
+            <nav aria-label="Primary" className="font-nav min-w-0 shrink-0">
+              <ul className="flex flex-nowrap items-center justify-end gap-2.5 text-sm font-semibold uppercase tracking-wide text-brand-light sm:gap-4 sm:text-base md:gap-5 md:text-lg">
                 {nav.map((item) => (
                   <li key={item.to} className="shrink-0">
                     <Link
@@ -49,7 +49,9 @@ export function SiteHeader() {
                 ))}
               </ul>
             </nav>
+          </div>
 
+          <div className="flex w-full justify-end lg:contents">
             <a href={`tel:${PHONE_E164}`} className={phoneLinkClass}>
               <span className="sr-only">Emergency line </span>
               {PHONE_DISPLAY}
