@@ -12,6 +12,8 @@ type BookingModalProps = {
   open: boolean;
   onClose: () => void;
   initialPostcode: string;
+  /** When set to a known option, pre-selects Service in the form */
+  initialService?: string;
 };
 
 type FieldKey = "name" | "phone" | "email" | "service";
@@ -31,10 +33,15 @@ function isValidUkMobile(value: string): boolean {
   return /^07\d{9}$/.test(d) || /^\+447\d{9}$/.test(d);
 }
 
+function isBookingServiceOption(value: string): value is (typeof BOOKING_SERVICE_OPTIONS)[number] {
+  return (BOOKING_SERVICE_OPTIONS as readonly string[]).includes(value);
+}
+
 export function BookingModal({
   open,
   onClose,
   initialPostcode,
+  initialService,
 }: BookingModalProps) {
   const titleId = useId();
   const nameId = useId();
@@ -66,6 +73,9 @@ export function BookingModal({
   useEffect(() => {
     if (open) {
       setPostcode(normalizeUkPostcode(initialPostcode));
+      setService(
+        initialService && isBookingServiceOption(initialService) ? initialService : "",
+      );
       setSummaryError(false);
       setFieldErrors({});
       document.body.style.overflow = "hidden";
@@ -76,7 +86,7 @@ export function BookingModal({
       };
     }
     return undefined;
-  }, [open, initialPostcode]);
+  }, [open, initialPostcode, initialService]);
 
   useEffect(() => {
     if (!open) {

@@ -2,7 +2,7 @@
 
 export const COMPANY_NAME = "Dripline Plumbers";
 
-/** Nav bar wordmark — /public/nav-wordmark.png (favicon is /logo.jpg in index.html) */
+/** Header wordmark — /nav-wordmark.png. Favicon: index.html `/logo.jpg?v=` (increment after icon swap). */
 export const HEADING_IMAGE_SRC = "/nav-wordmark.png";
 
 /** Hero background (London) — replace file in /public to swap image */

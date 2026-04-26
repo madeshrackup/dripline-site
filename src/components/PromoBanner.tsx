@@ -17,7 +17,7 @@ export function PromoBanner() {
             aria-hidden
           />
           <div>
-            <p className="text-sm font-bold leading-snug sm:text-base">
+            <p className="font-nav text-sm font-bold leading-snug sm:text-base">
               <span className="uppercase tracking-wide text-brand-light">
                 Flash offer —{" "}
               </span>

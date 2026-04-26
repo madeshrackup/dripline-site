@@ -14,7 +14,7 @@ export function Footer() {
       className="border-t-2 border-slate-900 bg-slate-900 text-white"
     >
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <p className="font-display text-xl font-semibold text-brand-light">
+        <p className="font-hero-headline text-xl font-bold italic text-brand-light">
           {SLOGAN}
         </p>
         <p className="mt-2 text-2xl font-bold tracking-tight">{COMPANY_NAME}</p>

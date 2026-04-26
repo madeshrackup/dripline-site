@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_E164, SERVICE_AREA_SHORT } from "../siteConfig";
 import { Section } from "./Section";
 
@@ -31,46 +31,61 @@ const faqs = [
 
 export function Faq() {
   return (
-    <div id="faq" className="border-t-2 border-slate-200 bg-white">
+    <div id="faq" className="border-t border-slate-200/80 bg-[#F4F8FB]">
       <Section
-        className="py-14 text-center lg:py-20"
+        className="py-14 lg:py-20"
         aria-labelledby="faq-heading"
       >
         <h2
           id="faq-heading"
-          className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"
+          className="text-center text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"
         >
           Frequently asked questions
         </h2>
-        <p className="mx-auto mt-2 max-w-2xl text-slate-600">
-          Straight answers on coverage, emergencies, and how we work. Call{" "}
-          <a
-            href={`tel:${PHONE_E164}`}
-            className="font-semibold text-brand underline decoration-2 underline-offset-2 hover:text-slate-900"
-          >
-            {PHONE_DISPLAY}
-          </a>{" "}
-          if you’d rather speak to someone.
-        </p>
-        <div className="mx-auto mt-10 flex max-w-3xl flex-col gap-3">
+
+        <div className="mx-auto mt-12 max-w-3xl border-y border-slate-200">
           {faqs.map((item) => (
             <details
               key={item.q}
-              className="group rounded-2xl border-2 border-slate-200 bg-brand-surface text-center open:border-brand open:bg-white"
+              className="group border-b border-slate-200 last:border-b-0 open:bg-white/70"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-center gap-3 px-5 py-4 font-semibold text-slate-900 marker:hidden [&::-webkit-details-marker]:hidden">
-                <span className="max-w-prose">{item.q}</span>
-                <ChevronDown
-                  className="h-5 w-5 shrink-0 text-brand transition-transform group-open:rotate-180"
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 pr-1 text-left marker:hidden [&::-webkit-details-marker]:hidden sm:py-6">
+                <span className="font-hero-lead text-base font-medium text-slate-900 sm:text-lg">
+                  {item.q}
+                </span>
+                <span
+                  className="flex h-8 w-8 shrink-0 items-center justify-center text-slate-900"
                   aria-hidden
-                />
+                >
+                  <Plus
+                    strokeWidth={2}
+                    className="h-5 w-5 group-open:hidden"
+                  />
+                  <Minus
+                    strokeWidth={2}
+                    className="hidden h-5 w-5 group-open:block"
+                  />
+                </span>
               </summary>
-              <div className="mx-auto max-w-2xl border-t-2 border-slate-200 px-5 pb-4 pt-3 text-sm leading-relaxed text-slate-600 group-open:border-slate-100">
+              <div className="font-hero-lead border-t border-slate-100 pb-6 pt-3 text-left text-sm leading-relaxed text-slate-600 sm:text-base">
                 {item.a}
               </div>
             </details>
           ))}
         </div>
+
+        <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-slate-600 sm:text-base">
+          <span className="font-hero-headline font-bold italic text-slate-600">
+            Prefer to talk it through? Call{" "}
+          </span>
+          <a
+            href={`tel:${PHONE_E164}`}
+            className="font-sans font-semibold text-brand underline decoration-2 underline-offset-2 hover:text-slate-900"
+          >
+            {PHONE_DISPLAY}
+          </a>
+          <span className="font-hero-headline font-bold italic text-slate-600">.</span>
+        </p>
       </Section>
     </div>
   );
