@@ -51,13 +51,12 @@ export function SiteHeader() {
             </nav>
           </div>
 
-          <a
-            href={`tel:${PHONE_E164}`}
-            className={`${phoneLinkClass} hidden shrink-0 lg:inline-flex`}
-          >
-            <span className="sr-only">Emergency line </span>
-            {PHONE_DISPLAY}
-          </a>
+          <div className="max-lg:hidden lg:contents">
+            <a href={`tel:${PHONE_E164}`} className={`${phoneLinkClass} shrink-0`}>
+              <span className="sr-only">Emergency line </span>
+              {PHONE_DISPLAY}
+            </a>
+          </div>
         </div>
       </div>
 
@@ -66,18 +65,16 @@ export function SiteHeader() {
         role="region"
         aria-label="24/7 emergency call-outs"
       >
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4 text-center sm:px-6">
-          <p className="font-nav text-sm font-bold leading-snug text-white sm:text-base">
-            <span className="uppercase tracking-wide text-white/90">
-              24/7 emergency call-outs
-            </span>{" "}
-            <a
-              href={`tel:${PHONE_E164}`}
-              className="font-bold text-white underline decoration-white/70 underline-offset-2 transition-colors hover:decoration-white"
-            >
-              {PHONE_DISPLAY}
-            </a>
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-1 px-4 text-center sm:gap-1.5 sm:px-6">
+          <p className="font-nav text-sm font-bold uppercase leading-snug tracking-wide text-white/90 sm:text-base">
+            24/7 emergency call-outs
           </p>
+          <a
+            href={`tel:${PHONE_E164}`}
+            className="font-nav whitespace-nowrap text-base font-bold text-white underline decoration-white/70 underline-offset-2 transition-colors hover:decoration-white sm:text-lg"
+          >
+            {PHONE_DISPLAY}
+          </a>
         </div>
       </div>
     </header>
