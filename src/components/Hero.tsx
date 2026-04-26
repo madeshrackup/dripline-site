@@ -30,7 +30,7 @@ export function Hero() {
       return;
     }
     if (!looksLikeUkPostcode(trimmed)) {
-      setBookingHint("Please enter a valid UK postcode (e.g. HA1 2XY).");
+      setBookingHint("Please enter a valid UK postcode (e.g. HA3 4AB).");
       return;
     }
     setBookingHint(null);
@@ -80,7 +80,7 @@ export function Hero() {
             <div className="flex min-w-0 flex-1 flex-col gap-2 md:max-w-md">
               <label
                 htmlFor="postcode"
-                className="text-sm font-semibold uppercase tracking-wide text-slate-600"
+                className="text-sm font-semibold uppercase tracking-wide text-black"
               >
                 Enter postcode
               </label>
@@ -94,7 +94,7 @@ export function Hero() {
                   name="postcode"
                   type="text"
                   autoComplete="postal-code"
-                  placeholder="e.g. HA1 2XY"
+                  placeholder="HA3 XXX"
                   value={postcode}
                   onChange={(e) => {
                     setPostcode(e.target.value);

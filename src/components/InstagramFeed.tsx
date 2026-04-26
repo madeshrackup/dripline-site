@@ -29,6 +29,18 @@ function truncateCaption(text: string | undefined, max = 80): string {
   return t.length <= max ? t : `${t.slice(0, max)}…`;
 }
 
+function formatFeedFetchError(e: unknown): string {
+  const raw = e instanceof Error ? e.message : "Could not load feed.";
+  if (
+    /load failed|failed to fetch|networkerror|network error|aborted|timed out/i.test(
+      raw,
+    )
+  ) {
+    return "Could not reach the feed API from this page (often a browser block or cross-origin from localhost). Set VITE_INSTAGRAM_DEV_PROXY in .env.local to a full JSON feed URL, or open the deployed site.";
+  }
+  return raw;
+}
+
 export function InstagramFeed() {
   const [rawPosts, setRawPosts] = useState<IgMedia[] | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">(
@@ -54,10 +66,27 @@ export function InstagramFeed() {
     (async () => {
       try {
         const res = await fetch(INSTAGRAM_FEED_API_URL);
-        const json = (await res.json()) as IgMediaResponse & {
-          error?: string;
-          message?: string;
-        };
+        const bodyText = await res.text();
+        const trimmed = bodyText.trim();
+        let json: IgMediaResponse & { error?: string; message?: string };
+        try {
+          json = JSON.parse(trimmed) as typeof json;
+        } catch {
+          if (res.status === 404) {
+            throw new Error(
+              "Instagram API returned 404 — /api/instagram-feed is not deployed on this domain yet. Deploy the latest code to Vercel (include the api/ folder), then redeploy. For npm run dev, set VITE_INSTAGRAM_DEV_PROXY in .env.local to a URL that already returns JSON (e.g. your-project.vercel.app/api/instagram-feed).",
+            );
+          }
+          const looksLikePage =
+            trimmed.startsWith("<") ||
+            trimmed.includes("NOT_FOUND") ||
+            trimmed.includes("could not be found");
+          throw new Error(
+            looksLikePage
+              ? "Instagram feed URL returned a web page instead of JSON. Your custom domain may not be wired to a deployment that includes api/instagram-feed.js yet — deploy, then set VITE_INSTAGRAM_DEV_PROXY to a working preview URL for local dev."
+              : "Feed response was not valid JSON.",
+          );
+        }
 
         if (!res.ok) {
           throw new Error(json.message || json.error || res.statusText);
@@ -76,7 +105,7 @@ export function InstagramFeed() {
         if (!cancelled) {
           setRawPosts(null);
           setStatus("error");
-          setErrorMessage(e instanceof Error ? e.message : "Could not load feed.");
+          setErrorMessage(formatFeedFetchError(e));
         }
       }
     })();
@@ -168,21 +197,29 @@ export function InstagramFeed() {
             </a>
             {!INSTAGRAM_FEED_API_URL ? (
               <p className="mt-4 text-xs text-slate-500">
-                Deploy with Netlify and set{" "}
+                For local <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">npm run dev</code>
+                , either set{" "}
                 <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
                   VITE_INSTAGRAM_FEED_API
                 </code>{" "}
-                to your function URL, plus{" "}
+                to your full feed URL, or use{" "}
+                <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
+                  /api/instagram-feed
+                </code>{" "}
+                plus{" "}
+                <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
+                  VITE_INSTAGRAM_DEV_PROXY
+                </code>{" "}
+                (see <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">vite.config.ts</code>
+                ). Production defaults to{" "}
+                <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">/api/instagram-feed</code>
+                . Server env:{" "}
                 <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
                   INSTAGRAM_USER_ID
-                </code>{" "}
-                and{" "}
+                </code>
+                ,{" "}
                 <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
                   INSTAGRAM_ACCESS_TOKEN
-                </code>{" "}
-                on Netlify — see{" "}
-                <code className="rounded bg-slate-100 px-1 font-mono text-slate-800">
-                  netlify/functions/instagram-feed.mjs
                 </code>
                 .
               </p>

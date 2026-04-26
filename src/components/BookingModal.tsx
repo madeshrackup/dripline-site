@@ -164,7 +164,7 @@ export function BookingModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="booking-modal relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded border border-slate-300 bg-white shadow-none"
+        className="booking-modal relative z-10 flex max-h-[min(92vh,900px)] w-full max-w-5xl flex-col overflow-hidden rounded border-0 bg-white shadow-none outline-none ring-0"
       >
         <div className="relative shrink-0 bg-brand px-6 pb-6 pt-8 text-center text-white sm:px-12">
           <button
@@ -315,7 +315,7 @@ export function BookingModal({
                   name="postcode"
                   type="text"
                   autoComplete="postal-code"
-                  placeholder="e.g. HA1 2XY"
+                  placeholder="HA3 XXX"
                   value={postcode}
                   onChange={(e) => setPostcode(e.target.value)}
                   className="rounded border border-slate-200 bg-white px-4 py-3 font-sans text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none"

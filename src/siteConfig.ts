@@ -2,8 +2,8 @@
 
 export const COMPANY_NAME = "Dripline Plumbers";
 
-/** Header wordmark (PNG lockup) */
-export const HEADING_IMAGE_SRC = "/heading-brand.png";
+/** Nav bar wordmark — /public/nav-wordmark.png (favicon is /logo.jpg in index.html) */
+export const HEADING_IMAGE_SRC = "/nav-wordmark.png";
 
 /** Hero background (London) — replace file in /public to swap image */
 export const HERO_BACKGROUND_SRC = "/hero-london.jpg";
@@ -49,10 +49,43 @@ export const INSTAGRAM_USERNAME = "driplineplumbers";
 export const INSTAGRAM_PROFILE_URL =
   "https://www.instagram.com/driplineplumbers/";
 
+function normalizeQuotedEnv(value: string | undefined): string {
+  if (!value) return "";
+  let s = value.trim();
+  if (s.length >= 2) {
+    const q = s[0];
+    if ((q === '"' || q === "'") && s.at(-1) === q) {
+      s = s.slice(1, -1).trim();
+    }
+  }
+  return s;
+}
+
+/** If VITE_INSTAGRAM_FEED_API is only origin (path `/`), append the feed route. */
+function resolveInstagramFeedApiUrl(configured: string): string {
+  if (!configured || configured.startsWith("/")) return configured;
+  try {
+    const u = new URL(configured);
+    if (u.pathname === "/" || u.pathname === "") {
+      u.pathname = "/api/instagram-feed";
+    }
+    return u.toString();
+  } catch {
+    return configured;
+  }
+}
+
 /**
- * Client calls this URL (must be same-origin or CORS-enabled). On Netlify,
- * use: https://YOUR-SITE.netlify.app/.netlify/functions/instagram-feed
- * Set in `.env` as VITE_INSTAGRAM_FEED_API — never put Instagram tokens in Vite env.
+ * Client fetches this URL (never put Instagram tokens here).
+ * Production defaults to same-origin `/api/instagram-feed` (Vercel `api/` route; Netlify `_redirects`).
+ * VITE_INSTAGRAM_FEED_API may be your site origin only — `/api/instagram-feed` is appended automatically.
  */
+const instagramFeedFromEnv = resolveInstagramFeedApiUrl(
+  normalizeQuotedEnv(
+    import.meta.env.VITE_INSTAGRAM_FEED_API as string | undefined,
+  ),
+);
+
 export const INSTAGRAM_FEED_API_URL: string =
-  (import.meta.env.VITE_INSTAGRAM_FEED_API as string | undefined)?.trim() || "";
+  instagramFeedFromEnv ||
+  (import.meta.env.PROD ? "/api/instagram-feed" : "");

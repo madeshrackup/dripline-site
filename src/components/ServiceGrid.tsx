@@ -38,11 +38,7 @@ export function ServiceGrid() {
         >
           What we do
         </h2>
-        <p className="mt-2 max-w-2xl text-slate-600">
-          Clear scope, professional kit, and work left ready to use — no
-          guesswork.
-        </p>
-        <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 sm:mt-10">
           {services.map(({ title, description, icon: Icon }) => (
             <li
               key={title}

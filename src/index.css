@@ -4,6 +4,7 @@
   --color-brand: #3981d3;
   --color-brand-light: #aad9ff;
   --color-brand-surface: #f8fcff;
+  --color-nav: #1d1d1d;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
 }
@@ -30,7 +31,15 @@ body {
   outline-offset: 2px;
 }
 
-/* Booking modal: no focus ring; fields still show border change on focus */
-.booking-modal :where(input, textarea, select, button, a):focus-visible {
-  outline: none;
+/* Booking modal: no focus outline / ring / glow (browser or global :focus-visible) */
+.booking-modal,
+.booking-modal * {
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+
+.booking-modal *:focus,
+.booking-modal *:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }

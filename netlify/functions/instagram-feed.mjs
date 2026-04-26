@@ -11,20 +11,47 @@
 
 const GRAPH = "https://graph.facebook.com/v21.0";
 
-export async function handler() {
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "86400",
+};
+
+function jsonResponse(statusCode, body, extraHeaders = {}) {
+  return {
+    statusCode,
+    headers: {
+      "Content-Type": "application/json",
+      ...corsHeaders,
+      ...extraHeaders,
+    },
+    body: JSON.stringify(body),
+  };
+}
+
+export async function handler(event) {
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers: corsHeaders, body: "" };
+  }
+
+  if (event.httpMethod !== "GET") {
+    return {
+      statusCode: 405,
+      headers: { ...corsHeaders, Allow: "GET, OPTIONS" },
+      body: "",
+    };
+  }
+
   const userId = process.env.INSTAGRAM_USER_ID;
   const token = process.env.INSTAGRAM_ACCESS_TOKEN;
 
   if (!userId || !token) {
-    return {
-      statusCode: 503,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        error: "instagram_not_configured",
-        message:
-          "Set INSTAGRAM_USER_ID and INSTAGRAM_ACCESS_TOKEN on Netlify for this function.",
-      }),
-    };
+    return jsonResponse(503, {
+      error: "instagram_not_configured",
+      message:
+        "Set INSTAGRAM_USER_ID and INSTAGRAM_ACCESS_TOKEN in your host’s environment (e.g. Netlify or Vercel).",
+    });
   }
 
   const fields = [
@@ -44,33 +71,20 @@ export async function handler() {
     const data = await res.json();
 
     if (!res.ok || data.error) {
-      return {
-        statusCode: 502,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          error: "instagram_graph_error",
-          message: data.error?.message || res.statusText,
-          details: data.error,
-        }),
-      };
+      return jsonResponse(502, {
+        error: "instagram_graph_error",
+        message: data.error?.message || res.statusText,
+        details: data.error,
+      });
     }
 
-    return {
-      statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=300",
-      },
-      body: JSON.stringify(data),
-    };
+    return jsonResponse(200, data, {
+      "Cache-Control": "public, max-age=300",
+    });
   } catch (e) {
-    return {
-      statusCode: 500,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        error: "fetch_failed",
-        message: e instanceof Error ? e.message : "Unknown error",
-      }),
-    };
+    return jsonResponse(500, {
+      error: "fetch_failed",
+      message: e instanceof Error ? e.message : "Unknown error",
+    });
   }
 }
