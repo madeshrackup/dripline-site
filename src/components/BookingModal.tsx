@@ -59,6 +59,7 @@ export function BookingModal({
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitState, setSubmitState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [serverError, setServerError] = useState<string | null>(null);
+  const [customerEmailSent, setCustomerEmailSent] = useState(true);
 
   function clearFieldError(key: FieldKey) {
     setFieldErrors((prev) => {
@@ -82,6 +83,7 @@ export function BookingModal({
       setFieldErrors({});
       setSubmitState("idle");
       setServerError(null);
+      setCustomerEmailSent(true);
       document.body.style.overflow = "hidden";
       const t = window.setTimeout(() => nameRef.current?.focus(), 50);
       return () => {
@@ -103,6 +105,7 @@ export function BookingModal({
       setFieldErrors({});
       setSubmitState("idle");
       setServerError(null);
+      setCustomerEmailSent(true);
     }
   }, [open]);
 
@@ -161,16 +164,26 @@ export function BookingModal({
         body: JSON.stringify(payload),
       });
 
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        missing?: string[];
+        message?: string;
+        customerEmailSent?: boolean;
+      };
 
       if (res.ok) {
+        setCustomerEmailSent(data.customerEmailSent !== false);
         setSubmitState("sent");
         return;
       }
 
       if (res.status === 503 && data.error === "email_not_configured") {
+        const which =
+          data.missing && data.missing.length > 0
+            ? ` (server reports: ${data.missing.join(" and ")})`
+            : "";
         setServerError(
-          `The booking form isn’t set up to send email from this version of the site yet. Please call ${PHONE_DISPLAY} or try again on the main website.`,
+          `The booking form needs two Resend settings on the server, not in the app source${which}. Set RESEND_API_KEY and BOOKING_FROM_EMAIL: the “from” address must be a domain you have verified in Resend (e.g. bookings@driplineplumbers.co.uk), save the variables for Production, and redeploy the site. Use plain variable names, not VITE_…. Or call ${PHONE_DISPLAY} to book now.`,
         );
         setSubmitState("error");
         return;
@@ -240,9 +253,21 @@ export function BookingModal({
               <p className="font-sans text-lg font-semibold text-slate-900">
                 Thanks — we’ve got your request.
               </p>
+              {customerEmailSent ? (
+                <p className="mt-2 font-sans text-sm text-slate-600 sm:text-base">
+                  We have sent a confirmation to your email with a copy of the details
+                  you entered. We will be in touch by phone or email soon.
+                </p>
+              ) : (
+                <p className="mt-2 font-sans text-sm text-slate-600 sm:text-base">
+                  We have your request and will be in touch by phone or email. We
+                  could not email you a copy just then — check the address is correct
+                  and your spam folder, or call the number in the bar above.
+                </p>
+              )}
               <p className="mt-2 font-sans text-sm text-slate-600 sm:text-base">
-                We’ll be in touch by phone or email. If it’s urgent, don’t wait: call
-                the number in the bar above and we can book you in straight away.
+                If it is urgent, do not wait: call the number in the bar above and we
+                can book you in straight away.
               </p>
               <button
                 type="button"

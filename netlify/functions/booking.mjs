@@ -63,8 +63,9 @@ export async function handler(event) {
     if (result.error === "email_not_configured") {
       return jsonResponse(503, {
         error: "email_not_configured",
+        missing: result.missing,
         message:
-          "Set RESEND_API_KEY and BOOKING_FROM_EMAIL in the deployment environment. See netlify/functions/booking.mjs.",
+          "Resend needs RESEND_API_KEY and BOOKING_FROM_EMAIL (a Resend-verified from address) on the server. Redeploy after changes.",
       });
     }
     return jsonResponse(result.status, {
@@ -73,5 +74,10 @@ export async function handler(event) {
     });
   }
 
-  return jsonResponse(200, { ok: true, id: result.id });
+  return jsonResponse(200, {
+    ok: true,
+    teamId: result.teamId,
+    customerId: result.customerId,
+    customerEmailSent: result.customerEmailSent,
+  });
 }

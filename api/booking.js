@@ -1,10 +1,10 @@
 /**
  * Receives booking form POSTs and emails details via Resend to info@driplineplumbers.co.uk (or BOOKING_TO_EMAIL).
  *
- * Environment (Vercel):
- *   RESEND_API_KEY       — from https://resend.com
- *   BOOKING_FROM_EMAIL   — verified sending address (e.g. bookings@your-verified-domain.com)
- *   BOOKING_TO_EMAIL     — optional, defaults to info@driplineplumbers.co.uk
+ * Environment (Vercel / Netlify) — all server-side, never use the VITE_ prefix:
+ *   RESEND_API_KEY        — from https://resend.com
+ *   BOOKING_FROM_EMAIL    — required: a Resend-verified sender, e.g. bookings@driplineplumbers.co.uk
+ *   BOOKING_TO_EMAIL     — optional; defaults to info@driplineplumbers.co.uk
  */
 
 import { parseBookingRequest, sendBookingEmail } from "../lib/resend-booking.mjs";
@@ -74,8 +74,9 @@ export default async function handler(req, res) {
     if (result.error === "email_not_configured") {
       return res.status(503).json({
         error: "email_not_configured",
+        missing: result.missing,
         message:
-          "Set RESEND_API_KEY and BOOKING_FROM_EMAIL in the deployment environment. See comments in api/booking.js.",
+          "Resend needs RESEND_API_KEY and BOOKING_FROM_EMAIL (a Resend-verified from address) on the server. Use plain names, not VITE_ — and redeploy after changes.",
       });
     }
     return res.status(result.status).json({
@@ -84,5 +85,10 @@ export default async function handler(req, res) {
     });
   }
 
-  return res.status(200).json({ ok: true, id: result.id });
+  return res.status(200).json({
+    ok: true,
+    teamId: result.teamId,
+    customerId: result.customerId,
+    customerEmailSent: result.customerEmailSent,
+  });
 }
