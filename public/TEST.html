@@ -1,9 +1,11 @@
-<!-- Local preview: npm run dev -> /TEST.html -->
+<!-- Local: npm run dev -> /TEST.html -->
 <!doctype html>
-<html lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en-GB" xmlns="http://www.w3.org/1999/xhtml" style="color-scheme:only light;">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
 <meta name="x-apple-disable-message-reformatting" content="">
 <!-- Mobile mail apps often ignore Google Fonts; Inter/Manrope may fall back. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +13,36 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Manrope:wght@600;700&display=swap">
 <title>We got your request</title>
 <style type="text/css">
+  /* Tell clients this message is light-themed (reduces iOS/Apple Mail dark-mode recolouring). */
+  :root, html, body, .email-shell { color-scheme: only light; }
+  /*
+   * Gmail (web + mobile) in dark mode: re-tints many emails. Pure #fff and flat backgrounds are hit
+   * hardest. We use PAPER #fffffe + repeat colours via gradient (some clients respect one path only).
+   */
+  .gmail-bglpaper { background-color: #fffffe !important; background: linear-gradient(#fffffe, #fffffe) !important; }
+  .gmail-bgsurface { background-color: #f4f7f9 !important; }
+  .gmail-bgheader { background-color: #1d1d1d !important; background: linear-gradient(#1d1d1d, #1d1d1d) !important; }
+  .gmail-bgcardsub { background-color: #f9fafb !important; background: linear-gradient(#f9fafb, #f9fafb) !important; }
+  .gmail-bgdetailin { background-color: #fffffe !important; background: linear-gradient(#fffffe, #fffffe) !important; }
+  .gmail-bgfoot { background-color: #f1f5f9 !important; }
+  /* Gmail dark theme can wash text to mid-grey; lock our palette (same as light, still readable in light view). */
+  p.email-heading, p.email-cta-p, .email-summary-line, .data-row-value, .email-intro .inv-name { color: #0f172a !important; -webkit-text-fill-color: #0f172a !important; }
+  p.email-greet, p.email-intro, div.email-summary.email-detail-box { color: #334155 !important; -webkit-text-fill-color: #334155 !important; }
+  div.summary-label, .data-row-label, .email-label { color: #64748b !important; -webkit-text-fill-color: #64748b !important; }
+  @media (prefers-color-scheme: dark) {
+    .email-outer, body, .email-outer > table { background-color: #f4f7f9 !important; }
+    .email-shell { background-color: #fffffe !important; }
+    .email-header-pad { background-color: #1d1d1d !important; background: linear-gradient(#1d1d1d,#1d1d1d) !important; border-bottom: 1px solid #2a2a2a !important; }
+    .email-heading, .email-cta-p { color: #0f172a !important; -webkit-text-fill-color: #0f172a !important; }
+    .email-greet, .email-label, .data-row-label, .summary-label { color: #64748b !important; -webkit-text-fill-color: #64748b !important; }
+    .email-intro, .email-detail-box { color: #334155 !important; -webkit-text-fill-color: #334155 !important; }
+    .email-intro .inv-name, .data-row-value, .email-summary-line { color: #0f172a !important; -webkit-text-fill-color: #0f172a !important; }
+    .email-details-card { background: linear-gradient(#f9fafb, #f9fafb) !important; background-color: #f9fafb !important; border-color: #e2e8f0 !important; }
+    .email-detail-box { background: linear-gradient(#fffffe,#fffffe) !important; background-color: #fffffe !important; border: 1px solid #e2e8f0 !important; }
+    .email-foot, .email-foot a { color: #64748b !important; -webkit-text-fill-color: #64748b !important; }
+    .btn-td a { color: #fffffe !important; -webkit-text-fill-color: #fffffe !important; }
+    .btn-td { background-color: #dc2626 !important; }
+  }
   /* Outlook.com / some clients */
   table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
   img { -ms-interpolation-mode:bicubic; border:0; height:auto; line-height:100%; outline:none; text-decoration:none; }
@@ -32,16 +64,16 @@
   }
 </style>
 </head>
-<body style="margin:0;padding:0;background:#f4f7f9;background-color:#f4f7f9;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+<body class="light-mode-email" style="margin:0;padding:0;background-color:#f4f7f9;color-scheme:only light;color:#0f172a;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 <!-- preheader: improves inbox preview -->
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;visibility:hidden;mso-hide:all;" aria-hidden="true">Thanks, Mert Pekgoz — we received your request for Bathroom installations in HA3 5AE. Bathroom installations in HA3 5AE | 07123 456789 | Mert Pekgoz</div>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" bgcolor="#f4f7f9" style="background:#f4f7f9;background-color:#f4f7f9;border:0;border-collapse:collapse;">
+<table class="gmail-bgsurface" role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f4f7f9;border:0;border-collapse:collapse;">
 <tr>
-<td class="email-outer" align="center" bgcolor="#f4f7f9" style="padding:20px 12px;font-family:'Inter',-apple-system,Segoe UI,sans-serif;background:#f4f7f9;background-color:#f4f7f9;">
-<table class="email-shell" role="presentation" width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="width:100%;max-width:600px;border:1px solid #1d1d1d;border-radius:8px;overflow:hidden;background:#ffffff;border-collapse:separate;">
+<td class="email-outer gmail-bgsurface" align="center" style="padding:20px 12px;font-family:'Inter',-apple-system,Segoe UI,sans-serif;">
+<table class="email-shell gmail-bglpaper" role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;max-width:600px;border:1px solid #1d1d1d;border-radius:8px;overflow:hidden;background-color:#fffffe;background:linear-gradient(#fffffe,#fffffe);border-collapse:separate;">
 <!-- header / logo (match site nav: dark bar so wordmark blends) -->
 <tr>
-<td class="email-header-pad" bgcolor="#1d1d1d" style="background:#1d1d1d;background-color:#1d1d1d;padding:24px 20px 20px 20px;text-align:center;border-bottom:1px solid #2a2a2a;">
+<td class="email-header-pad gmail-bgheader" style="background-color:#1d1d1d;background:linear-gradient(#1d1d1d,#1d1d1d);padding:24px 20px 20px 20px;text-align:center;border-bottom:1px solid #2a2a2a;">
 <a href="https://www.driplineplumbers.co.uk/" style="text-decoration:none;" target="_blank" rel="noopener">
 <img class="email-logo" src="/nav-wordmark.png" width="200" height="" alt="Dripline Plumbers" style="display:block;margin:0 auto;max-width:200px;width:100%;height:auto;border:0;outline:none;">
 </a>
@@ -49,50 +81,50 @@
 </tr>
 <tr>
 <td class="email-pad" style="padding:24px 20px 6px 20px;">
-<p style="font-family:'Manrope','Inter',-apple-system,Segoe UI,sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;margin:0 0 4px 0;color:#0f172a;">We got your request</p>
-<p style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;margin:0;color:#334155;">Hi Mert,</p>
+<p class="email-heading" style="font-family:'Manrope','Inter',-apple-system,Segoe UI,sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;margin:0 0 4px 0;color:#0f172a;-webkit-text-fill-color:#0f172a;">We got your request</p>
+<p class="email-greet" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;margin:0;color:#334155;-webkit-text-fill-color:#334155;">Hi Mert,</p>
 </td>
 </tr>
 <tr>
 <td class="email-pad" style="padding:8px 20px 0 20px;">
-<p style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;margin:0 0 0 0;color:#334155;">Thanks for reaching out to <strong style="color:#0f172a">Dripline Plumbers</strong>. We&rsquo;ve received your request and a member of the team will review the details and get back to you shortly. Below is a copy of what you sent us.</p>
+<p class="email-intro" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;margin:0 0 0 0;color:#334155;-webkit-text-fill-color:#334155;">Thanks for reaching out to <strong class="inv-name" style="color:#0f172a;-webkit-text-fill-color:#0f172a;">Dripline Plumbers</strong>. We&rsquo;ve received your request and a member of the team will review the details and get back to you shortly. Below is a copy of what you sent us.</p>
 </td>
 </tr>
 <!-- summary band -->
 <tr>
 <td class="email-pad-sm" style="padding:18px 20px 0 20px;">
-<div style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:13px;font-weight:600;color:#64748b;letter-spacing:0.04em;margin:0 0 6px 0;">Summary</div>
-<div class="email-summary" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:14px;font-weight:600;color:#0f172a;line-height:1.45;word-wrap:break-word;overflow-wrap:break-word;">Bathroom installations in HA3 5AE | 07123 456789 | Mert Pekgoz</div>
+<div class="summary-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:13px;font-weight:600;color:#64748b;letter-spacing:0.04em;margin:0 0 6px 0;">Summary</div>
+<div class="email-summary email-summary-line" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:14px;font-weight:600;color:#0f172a;-webkit-text-fill-color:#0f172a;line-height:1.45;word-wrap:break-word;overflow-wrap:break-word;">Bathroom installations in HA3 5AE | 07123 456789 | Mert Pekgoz</div>
 </td>
 </tr>
 <!-- details card -->
 <tr>
 <td class="email-pad" style="padding:20px 20px 6px 20px;">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" bgcolor="#f9fafb" style="background:#f9fafb;background-color:#f9fafb;border-radius:6px;border:1px solid #e2e8f0;border-left:4px solid #1d1d1d;">
+<table class="email-details-card gmail-bgcardsub" role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f9fafb;background:linear-gradient(#f9fafb,#f9fafb);border-radius:6px;border:1px solid #e2e8f0;border-left:4px solid #1d1d1d;">
 <tr>
 <td style="padding:20px 20px 8px 20px;">
 <table class="data-rows" role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;table-layout:fixed;">
 <tr>
-<td class="data-row-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;padding:0 0 4px 0;vertical-align:top;width:100px;">Name</td>
-<td class="data-row-value" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:600;color:#0f172a;padding:0 0 10px 0;word-wrap:break-word;overflow-wrap:break-word;">Mert Pekgoz</td>
+<td class="data-row-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;-webkit-text-fill-color:#64748b;text-transform:uppercase;letter-spacing:0.04em;padding:0 0 4px 0;vertical-align:top;width:100px;">Name</td>
+<td class="data-row-value" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:600;color:#0f172a;-webkit-text-fill-color:#0f172a;padding:0 0 10px 0;word-wrap:break-word;overflow-wrap:break-word;">Mert Pekgoz</td>
 </tr><tr>
-<td class="data-row-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;padding:0 0 4px 0;vertical-align:top;width:100px;">Phone</td>
-<td class="data-row-value" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:600;color:#0f172a;padding:0 0 10px 0;word-wrap:break-word;overflow-wrap:break-word;">07123 456789</td>
+<td class="data-row-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;-webkit-text-fill-color:#64748b;text-transform:uppercase;letter-spacing:0.04em;padding:0 0 4px 0;vertical-align:top;width:100px;">Phone</td>
+<td class="data-row-value" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:600;color:#0f172a;-webkit-text-fill-color:#0f172a;padding:0 0 10px 0;word-wrap:break-word;overflow-wrap:break-word;">07123 456789</td>
 </tr><tr>
-<td class="data-row-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;padding:0 0 4px 0;vertical-align:top;width:100px;">Postcode</td>
-<td class="data-row-value" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:600;color:#0f172a;padding:0 0 10px 0;word-wrap:break-word;overflow-wrap:break-word;">HA3 5AE</td>
+<td class="data-row-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;-webkit-text-fill-color:#64748b;text-transform:uppercase;letter-spacing:0.04em;padding:0 0 4px 0;vertical-align:top;width:100px;">Postcode</td>
+<td class="data-row-value" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:600;color:#0f172a;-webkit-text-fill-color:#0f172a;padding:0 0 10px 0;word-wrap:break-word;overflow-wrap:break-word;">HA3 5AE</td>
 </tr><tr>
-<td class="data-row-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;padding:0 0 4px 0;vertical-align:top;width:100px;">Service</td>
-<td class="data-row-value" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:600;color:#0f172a;padding:0 0 10px 0;word-wrap:break-word;overflow-wrap:break-word;">Bathroom installations</td>
+<td class="data-row-label" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;-webkit-text-fill-color:#64748b;text-transform:uppercase;letter-spacing:0.04em;padding:0 0 4px 0;vertical-align:top;width:100px;">Service</td>
+<td class="data-row-value" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:600;color:#0f172a;-webkit-text-fill-color:#0f172a;padding:0 0 10px 0;word-wrap:break-word;overflow-wrap:break-word;">Bathroom installations</td>
 </tr></table>
 </td>
 </tr>
 <tr>
-<td style="padding:0 20px 4px 20px;font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">Details</td>
+<td class="email-label" style="padding:0 20px 4px 20px;font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:12px;font-weight:700;color:#64748b;-webkit-text-fill-color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">Details</td>
 </tr>
 <tr>
 <td style="padding:0 20px 20px 20px;">
-<div class="email-summary" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.5;color:#334155;font-style:italic;border:1px solid #e2e8f0;border-radius:4px;padding:12px 14px;background:#ffffff;white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;max-width:100%;">Test message</div>
+<div class="email-summary email-detail-box gmail-bgdetailin" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.5;color:#334155;-webkit-text-fill-color:#334155;font-style:italic;border:1px solid #e2e8f0;border-radius:4px;padding:12px 14px;background-color:#fffffe;background:linear-gradient(#fffffe,#fffffe);white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;max-width:100%;">Test message</div>
 </td>
 </tr>
 </table>
@@ -101,11 +133,11 @@
 <!-- CTA (centred) -->
 <tr>
 <td class="email-cta-pad" align="center" style="padding:12px 20px 28px 20px;text-align:center;">
-<p style="font-family:'Manrope','Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:700;margin:0 0 12px 0;color:#0f172a;text-align:center;">Need an emergency plumber right now?</p>
-<table role="presentation" cellspacing="0" cellpadding="0" align="center" style="margin:0 auto;border-collapse:collapse;">
+<p class="email-cta-p" style="font-family:'Manrope','Inter',-apple-system,Segoe UI,sans-serif;font-size:15px;font-weight:700;margin:0 0 12px 0;color:#0f172a;-webkit-text-fill-color:#0f172a;text-align:center;">Need an emergency plumber right now?</p>
+<table class="email-cta-btn-wrap" role="presentation" cellspacing="0" cellpadding="0" align="center" style="margin:0 auto;border-collapse:collapse;">
 <tr>
-<td align="center" bgcolor="#dc2626" style="background:#dc2626;background-color:#dc2626;border-radius:5px;padding:0;">
-<a href="tel:+447403767600" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;display:inline-block;padding:12px 28px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;">Call 07403 767600</a>
+<td class="btn-td" align="center" style="background-color:#dc2626;border-radius:5px;padding:0;">
+<a href="tel:+447403767600" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;display:inline-block;padding:12px 28px;font-size:15px;font-weight:700;color:#ffffff;-webkit-text-fill-color:#ffffff;text-decoration:none;">Call 07403 767600</a>
 </td>
 </tr>
 </table>
@@ -113,10 +145,10 @@
 </tr>
 <!-- footer -->
 <tr>
-<td class="email-foot-pad" bgcolor="#f1f5f9" style="background:#f1f5f9;background-color:#f1f5f9;padding:20px 20px;text-align:center;border-top:1px solid #e2e8f0;">
-<p style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:13px;line-height:1.5;margin:0;color:#64748b;">Dripline Plumbers &middot; Harrow, Brent &amp; North West London</p>
-<p style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:13px;margin:10px 0 0 0;">
-<a href="https://www.driplineplumbers.co.uk" style="color:#64748b;" target="_blank" rel="noopener">www.driplineplumbers.co.uk</a>
+<td class="email-foot-pad gmail-bgfoot" style="background-color:#f1f5f9;padding:20px 20px;text-align:center;border-top:1px solid #e2e8f0;">
+<p class="email-foot" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:13px;line-height:1.5;margin:0;color:#64748b;-webkit-text-fill-color:#64748b;">Dripline Plumbers &middot; Harrow, Brent &amp; North West London</p>
+<p class="email-foot" style="font-family:'Inter',-apple-system,Segoe UI,sans-serif;font-size:13px;margin:10px 0 0 0;">
+<a class="email-foot" href="https://www.driplineplumbers.co.uk" style="color:#64748b;-webkit-text-fill-color:#64748b;" target="_blank" rel="noopener">www.driplineplumbers.co.uk</a>
 </p>
 </td>
 </tr>
