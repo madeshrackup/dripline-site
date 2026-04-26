@@ -3,28 +3,39 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 
 /**
- * Local dev: set VITE_INSTAGRAM_FEED_API=/api/instagram-feed and
- * VITE_INSTAGRAM_DEV_PROXY=https://<your-deployment>.vercel.app/api/instagram-feed
- * (www will 404 until that deployment is promoted / aliased to the custom domain).
+ * Local dev: point env vars at a deployed Vercel preview (functions under /api/):
+ *   VITE_INSTAGRAM_DEV_PROXY=https://<deploy>.vercel.app/api/instagram-feed
+ *   VITE_BOOKING_DEV_PROXY=https://<deploy>.vercel.app/api/booking
+ * Then use VITE_INSTAGRAM_FEED_API=/api/instagram-feed; form posts to /api/booking (same-origin in dev).
  */
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const devProxyFull = env.VITE_INSTAGRAM_DEV_PROXY?.trim();
+  const igProxy = env.VITE_INSTAGRAM_DEV_PROXY?.trim();
+  const bookingProxy = env.VITE_BOOKING_DEV_PROXY?.trim();
+
+  const proxy: Record<string, { target: string; changeOrigin: boolean; rewrite: (path: string) => string }> = {};
+  if (igProxy) {
+    const u = new URL(igProxy);
+    proxy["/api/instagram-feed"] = {
+      target: u.origin,
+      changeOrigin: true,
+      rewrite: () => `${u.pathname}${u.search}`,
+    };
+  }
+  if (bookingProxy) {
+    const u = new URL(bookingProxy);
+    proxy["/api/booking"] = {
+      target: u.origin,
+      changeOrigin: true,
+      rewrite: () => `${u.pathname}${u.search}`,
+    };
+  }
 
   return {
     plugins: [react(), tailwindcss()],
-    server: devProxyFull
+    server: Object.keys(proxy).length
       ? {
-          proxy: {
-            "/api/instagram-feed": {
-              target: new URL(devProxyFull).origin,
-              changeOrigin: true,
-              rewrite: () => {
-                const u = new URL(devProxyFull);
-                return `${u.pathname}${u.search}`;
-              },
-            },
-          },
+          proxy,
         }
       : {},
   };

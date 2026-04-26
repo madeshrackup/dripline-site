@@ -2,10 +2,10 @@ import type { FormEvent } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import { X } from "lucide-react";
 import {
+  BOOKING_API_PATH,
   BOOKING_SERVICE_OPTIONS,
   PHONE_DISPLAY,
   PHONE_E164,
-  QUOTE_EMAIL,
 } from "../siteConfig";
 
 type BookingModalProps = {
@@ -57,6 +57,8 @@ export function BookingModal({
   const [details, setDetails] = useState("");
   const [summaryError, setSummaryError] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [submitState, setSubmitState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [serverError, setServerError] = useState<string | null>(null);
 
   function clearFieldError(key: FieldKey) {
     setFieldErrors((prev) => {
@@ -78,6 +80,8 @@ export function BookingModal({
       );
       setSummaryError(false);
       setFieldErrors({});
+      setSubmitState("idle");
+      setServerError(null);
       document.body.style.overflow = "hidden";
       const t = window.setTimeout(() => nameRef.current?.focus(), 50);
       return () => {
@@ -97,6 +101,8 @@ export function BookingModal({
       setDetails("");
       setSummaryError(false);
       setFieldErrors({});
+      setSubmitState("idle");
+      setServerError(null);
     }
   }, [open]);
 
@@ -109,8 +115,10 @@ export function BookingModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (submitState === "sending" || submitState === "sent") return;
+
     const next: FieldErrors = {};
 
     if (!name.trim()) next.name = "Enter your full name.";
@@ -134,22 +142,46 @@ export function BookingModal({
 
     setFieldErrors({});
     setSummaryError(false);
+    setServerError(null);
+    setSubmitState("sending");
 
-    const body = encodeURIComponent(
-      [
-        `Name: ${name.trim()}`,
-        `Phone: ${phone.trim()}`,
-        `Email: ${email.trim()}`,
-        `Postcode: ${postcode.trim() || "—"}`,
-        `Service: ${service}`,
-        "",
-        "Details:",
-        details.trim() || "—",
-      ].join("\n"),
-    );
-    const subject = encodeURIComponent("Booking request — Dripline Plumbers");
-    window.location.href = `mailto:${QUOTE_EMAIL}?subject=${subject}&body=${body}`;
-    onClose();
+    const payload = {
+      name: name.trim(),
+      phone: phone.trim(),
+      email: email.trim(),
+      postcode: normalizeUkPostcode(postcode).trim(),
+      service,
+      details: details.trim(),
+    };
+
+    try {
+      const res = await fetch(BOOKING_API_PATH, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+
+      if (res.ok) {
+        setSubmitState("sent");
+        return;
+      }
+
+      if (res.status === 503 && data.error === "email_not_configured") {
+        setServerError(
+          `The booking form isn’t set up to send email from this version of the site yet. Please call ${PHONE_DISPLAY} or try again on the main website.`,
+        );
+        setSubmitState("error");
+        return;
+      }
+
+      setServerError("We couldn’t send your request just then. Check your connection and try again, or call us to book.");
+      setSubmitState("error");
+    } catch {
+      setServerError("We couldn’t reach the server. If you’re testing locally, point VITE_BOOKING_DEV_PROXY to a deployment with email configured, or use the live site. Otherwise, call to book.");
+      setSubmitState("error");
+    }
   }
 
   const inputError = (key: FieldKey) =>
@@ -203,12 +235,43 @@ export function BookingModal({
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6 sm:px-12 sm:py-8">
-          <p className="text-center font-sans text-sm text-slate-600 sm:text-base">
-            Can’t call right now? Send a booking request using the form below —
-            we’ll confirm by phone or email.
-          </p>
+          {submitState === "sent" ? (
+            <div className="mt-2 text-center">
+              <p className="font-sans text-lg font-semibold text-slate-900">
+                Thanks — we’ve got your request.
+              </p>
+              <p className="mt-2 font-sans text-sm text-slate-600 sm:text-base">
+                We’ll be in touch by phone or email. If it’s urgent, don’t wait: call
+                the number in the bar above and we can book you in straight away.
+              </p>
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-6 rounded border border-slate-300 bg-white px-8 py-3 font-sans text-sm font-bold uppercase tracking-wide text-slate-800 transition-colors hover:border-slate-400"
+              >
+                Close
+              </button>
+            </div>
+          ) : (
+            <>
+              <p className="text-center font-sans text-sm text-slate-600 sm:text-base">
+                Can’t call right now? Send a booking request using the form below — we
+                will confirm by phone or email.
+              </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
+              <form
+                onSubmit={handleSubmit}
+                className="mt-8 flex flex-col gap-5"
+                aria-busy={submitState === "sending"}
+              >
+                {serverError ? (
+                  <p
+                    className="rounded border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-semibold text-red-600"
+                    role="alert"
+                  >
+                    {serverError}
+                  </p>
+                ) : null}
             {summaryError ? (
               <p
                 className="rounded border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-semibold text-red-600"
@@ -399,12 +462,15 @@ export function BookingModal({
               </button>
               <button
                 type="submit"
-                className="rounded border border-red-600 bg-red-600 px-8 py-3 font-sans text-sm font-bold uppercase tracking-wide text-white transition-colors hover:border-red-700 hover:bg-red-700"
+                disabled={submitState === "sending"}
+                className="rounded border border-red-600 bg-red-600 px-8 py-3 font-sans text-sm font-bold uppercase tracking-wide text-white transition-colors enabled:hover:border-red-700 enabled:hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Send booking request
+                {submitState === "sending" ? "Sending…" : "Send booking request"}
               </button>
             </div>
           </form>
+            </>
+          )}
         </div>
       </div>
     </div>

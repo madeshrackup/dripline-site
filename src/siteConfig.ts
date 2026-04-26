@@ -27,6 +27,9 @@ export const SLOGAN = "Spot a drip? Call our line.";
 /** Prefilled quote email — replace with your real enquiries address when ready */
 export const QUOTE_EMAIL = "quotes@driplineplumbers.co.uk";
 
+/** Form POSTs here (Vercel `api/booking` / Netlify `booking` function); email goes to info@driplineplumbers.co.uk unless BOOKING_TO_EMAIL is set. */
+export const BOOKING_API_PATH = "/api/booking";
+
 /** Booking modal service dropdown — align with ServiceGrid + catch-all */
 export const BOOKING_SERVICE_OPTIONS = [
   "Leak detection",
